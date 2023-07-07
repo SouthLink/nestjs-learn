@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoffeesModule } from './coffees/coffees.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
+import { TestMiddleware } from './test.middleware';
 
 @Module({
   imports: [
@@ -23,4 +24,9 @@ import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  // 依赖注入中间件， * 代表所有路由
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TestMiddleware).forRoutes('coffees');
+  }
+}
