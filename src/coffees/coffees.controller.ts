@@ -9,11 +9,16 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { PaginationQueryDot } from 'src/common/dto/pagination-query.dot';
+import { TestFilterFilter } from 'src/testFilter.filter';
+import { TestFilterHandleException } from 'src/testFilterHandle';
+import { AaaGuard } from 'src/aaa.guard';
 
 //@Query ?后的参数
 //param url/后的参数
@@ -30,7 +35,10 @@ export class CoffeesController {
   }
 
   @Get()
+  @UseFilters(TestFilterFilter)
+  @UseGuards(AaaGuard)
   findAll(@Query() PaginationQueryDot: PaginationQueryDot) {
+    throw new TestFilterHandleException('aaa', 'bbb');
     return this.coffeesService.findAll(PaginationQueryDot);
   }
 
