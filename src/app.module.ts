@@ -5,6 +5,8 @@ import { CoffeesModule } from './coffees/coffees.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
 import { TestMiddleware } from './test.middleware';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TestInterceptorInterceptor } from './test.interceptor.interceptor';
 
 @Module({
   imports: [
@@ -22,7 +24,14 @@ import { TestMiddleware } from './test.middleware';
     CoffeeRatingModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // 全局拦截器依赖注入
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: TestInterceptorInterceptor,
+    // },
+  ],
 })
 export class AppModule implements NestModule {
   // 依赖注入中间件， * 代表所有路由
