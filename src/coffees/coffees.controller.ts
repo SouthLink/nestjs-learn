@@ -15,6 +15,7 @@ import {
   ParseIntPipe,
   HttpException,
   ParseArrayPipe,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
@@ -24,6 +25,8 @@ import { TestFilterFilter } from 'src/testFilter.filter';
 import { TestFilterHandleException } from 'src/testFilterHandle';
 import { AaaGuard } from 'src/aaa.guard';
 import { TestInterceptorInterceptor } from 'src/test.interceptor.interceptor';
+import { ValidateCoffeeTestDto } from './dto/validate.dto';
+import { TestValidationPipe } from 'src/test.pipe';
 
 //@Query ?后的参数
 //param url/后的参数
@@ -71,6 +74,11 @@ export class CoffeesController {
   ): string {
     console.log(a);
     return '123123123' + a;
+  }
+
+  @Post('validatorDto')
+  validatorDto(@Body(new TestValidationPipe()) obj: ValidateCoffeeTestDto) {
+    console.log(obj);
   }
 
   @Get()

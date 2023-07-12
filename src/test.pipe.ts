@@ -1,4 +1,11 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  Injectable,
+  PipeTransform,
+  BadRequestException,
+} from '@nestjs/common';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
 // 在 Nest.js 中，Pipe（管道）是一种用于处理输入数据的机制。它充当输入转换和验证的过滤器，
 // 可以在数据进入控制器之前对其进行转换、验证和处理。
@@ -33,9 +40,24 @@ import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 
 // 总结而言，管道是 Nest.js 中用于处理输入数据的机制，可以进行验证、转换和处理。
 // 它们提供了一种简洁和可扩展的方式来处理请求数据，并增加了代码的可读性和可维护性。
+
+
 @Injectable()
-export class TestPipePipe implements PipeTransform {
-  transform(value: any, metadata: ArgumentMetadata) {
+export class TestValidationPipe implements PipeTransform {
+  async transform(value: any, metadata: ArgumentMetadata) {
+    if (!metadata.metatype) {
+      return value;
+    }
+
+    const object = plainToInstance(metadata.metatype, value);
+    const errors = await validate(object);
+
+    console.log(errors);
+
+    if (errors.length > 0) {
+      throw new BadRequestException('参数校验失败');
+    }
+
     return value;
   }
 }
